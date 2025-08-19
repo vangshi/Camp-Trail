@@ -3,9 +3,32 @@ maptilersdk.config.apiKey = maptilerApiKey;
 const map = new maptilersdk.Map({
     container: 'map',
     style: maptilersdk.MapStyle.BRIGHT,
-    center: [-103.59179687498357, 40.66995747013945],
-    zoom: 3
+    center: [77.2090, 28.6139],
+    zoom: 4
 });
+
+ if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const userLng = position.coords.longitude;
+        const userLat = position.coords.latitude;
+
+        // Move map to user's location
+        map.setCenter([userLng, userLat]);
+        map.setZoom(4);
+
+        // Optional: Add a marker at user's location
+        new maptilersdk.Marker()
+          .setLngLat([userLng, userLat])
+          .addTo(map);
+      },
+      (error) => {
+        console.error("Error getting location:", error);
+      }
+    );
+  } else {
+    alert("Geolocation is not supported by your browser.");
+  }
 
 map.on('load', function () {
     map.addSource('campgrounds', {
